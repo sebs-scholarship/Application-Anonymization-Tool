@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base target="_top">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    </head>
+    <body>
+        <div style="width: 350px">
+            <div>
+                <textarea id="word-field" class="materialize-textarea"></textarea>
+                <label for="word-field">Search list (separated by commas)</label>
+            </div>
+            <br>
+            <div class="sbs right">
+                <button class="waves-effect waves-light btn-flat grey lighten-4" onclick="onSuccess()">Cancel</button>
+                <button class="waves-effect waves-light btn-flat teal lighten-1 white-text" onclick="submit()">Search</button>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                google.script.run.withSuccessHandler(load).getLast();
+            });
+
+            function load(words) {
+                document.getElementById("word-field").value = words;
+                M.updateTextFields();
+            }
+
+            function submit() {
+                let wordList = document.getElementById("word-field").value;
+
+                google.script.run.withFailureHandler(onFailure).withSuccessHandler(onSuccess).onSearch(wordList);
+            }
+
+            function onFailure(msg) {
+                alert("There was an error searching your document! Please try again!");
+                console.log("[ERROR] " + msg.toString());
+            }
+
+            function onSuccess(msg) {
+                google.script.host.close();
+            }
+        </script>
+    </body>
+</html>
